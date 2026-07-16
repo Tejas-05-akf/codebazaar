@@ -72,7 +72,7 @@ function EmptyMarketplaceState() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        The marketplace is waiting for its first creators. Once developers publish websites, apps, templates or digital products, they will automatically appear here.
+        Be among the first developers to sell websites, mobile apps, SaaS products, dashboards, AI tools, and templates on CodeBazaar.
       </motion.p>
 
       {/* CTA Buttons */}
@@ -227,7 +227,7 @@ export function FeaturedProducts() {
 
         {/* Subtitle */}
         <p className="font-sans text-sm text-zinc-500 mb-6 max-w-2xl leading-relaxed">
-          Explore websites, mobile apps, SaaS products, templates, AI tools, dashboards and business solutions published by our developer community.
+          CodeBazaar is preparing for its first generation of digital sellers.
         </p>
 
         {/* Active filters - only show when products exist */}
