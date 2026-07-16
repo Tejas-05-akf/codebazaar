@@ -4,10 +4,30 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Star, Download, ArrowRight } from 'lucide-react';
-import type { Product } from '@/data/mockData';
-import { formatINR } from '@/data/mockData';
 
-function badgeClasses(badge: Product['badge']): string {
+export type ProductBadge = 'Bestseller' | 'Hot' | 'New' | undefined;
+
+export interface ProductCardData {
+  id: string;
+  title: string;
+  shortDescription: string;
+  category: string;
+  price: number;
+  rating: number;
+  reviews: number;
+  downloads: number;
+  thumbnailColor: string;
+  thumbnailUrl: string | null;
+  seller: { name: string; initials: string; verified: boolean };
+  isFeatured: boolean;
+  badge: ProductBadge;
+}
+
+function formatINR(rupees: number): string {
+  return '₹' + rupees.toLocaleString('en-IN');
+}
+
+function badgeClasses(badge: ProductBadge): string {
   if (!badge) return '';
   if (badge === 'Bestseller') return 'bg-[#FF6B35] text-black';
   if (badge === 'Hot') return 'bg-red-500 text-white';
@@ -15,23 +35,7 @@ function badgeClasses(badge: Product['badge']): string {
   return '';
 }
 
-function categoryLabel(cat: string): string {
-  const map: Record<string, string> = {
-    gym: 'Gym', restaurant: 'Restaurant', salon: 'Salon', clinic: 'Clinic',
-    school: 'School', 'real-estate': 'Real Estate',
-  };
-  return map[cat] || cat;
-}
-
-function solutionLabel(type: string): string {
-  const map: Record<string, string> = {
-    website: 'Website', crm: 'CRM', 'mobile-app': 'Mobile App',
-    'admin-dashboard': 'Dashboard', pos: 'POS', 'booking-system': 'Booking',
-  };
-  return map[type] || type;
-}
-
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product }: { product: ProductCardData }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -50,7 +54,15 @@ export function ProductCard({ product }: { product: Product }) {
       >
         {/* Thumbnail */}
         <div className="h-44 relative overflow-hidden">
-          <div className={`absolute inset-0 bg-gradient-to-br ${product.thumbnailColor}`} />
+          {product.thumbnailUrl ? (
+            <img
+              src={product.thumbnailUrl}
+              alt={product.title}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <div className={`absolute inset-0 bg-gradient-to-br ${product.thumbnailColor}`} />
+          )}
           {/* Grid overlay */}
           <div
             className="absolute inset-0 opacity-30"
@@ -74,7 +86,7 @@ export function ProductCard({ product }: { product: Product }) {
           )}
           {/* Category badge */}
           <div className="absolute top-3 right-3 bg-[#0A0A0A]/80 backdrop-blur-sm border border-[#1F1F1F] text-zinc-300 font-sans text-[11px] rounded-md px-2.5 py-1">
-            {categoryLabel(product.businessCategory)}
+            {product.category}
           </div>
           {/* Quick preview hover */}
           <div
@@ -88,13 +100,8 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* Card body */}
         <div className="p-4">
-          {/* Solution type */}
-          <div className="bg-[#1F1F1F] text-zinc-400 font-sans text-[11px] rounded-md px-2 py-0.5 inline-block">
-            {solutionLabel(product.solutionType)}
-          </div>
-
           {/* Title */}
-          <h3 className="font-sans font-semibold text-base text-white mt-2 leading-snug line-clamp-2 group-hover:text-[#FF6B35]/90 transition-colors">
+          <h3 className="font-sans font-semibold text-base text-white mt-0 leading-snug line-clamp-2 group-hover:text-[#FF6B35]/90 transition-colors">
             {product.title}
           </h3>
 
