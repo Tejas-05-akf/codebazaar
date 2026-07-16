@@ -35,13 +35,43 @@ export default function OrdersPage() {
       });
   }, [user]);
 
-  const handleDownload = (order: any) => {
+  const handleDownload = async (order: any) => {
     if (order.download_count >= order.max_downloads) {
       toast.error('Download limit reached. Contact support.');
       return;
     }
-    toast.success('Download started!');
-    // In real app, would generate presigned URL and trigger download
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      const token = session.session?.access_token;
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+      // Call the create_download_token RPC
+      const { data, error } = await supabase.rpc('create_download_token', {
+        p_order_id: order.id,
+        p_buyer_id: order.buyer_id,
+        p_product_id: order.product_id,
+      });
+
+      if (error || !data) {
+        toast.error('Failed to generate download link');
+        return;
+      }
+
+      // Trigger download via edge function
+      window.open(`${supabaseUrl}/functions/v1/secure-download?token=${data}&order_id=${order.id}`, '_blank');
+      toast.success('Download started!');
+      // Reload orders to update download count
+      if (user) {
+        supabase
+          .from('orders')
+          .select('*, product:products(*)')
+          .eq('buyer_id', user.id)
+          .order('created_at', { ascending: false })
+          .then(({ data }) => setOrders(data || []));
+      }
+    } catch {
+      toast.error('Download failed. Please try again.');
+    }
   };
 
   if (!user) {

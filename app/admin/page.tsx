@@ -21,7 +21,6 @@ import {
   Clock,
   Star,
   ArrowRight,
-  Shield,
 } from 'lucide-react';
 
 function formatPrice(paise: number) {
@@ -33,7 +32,7 @@ function formatDate(dateStr: string) {
 }
 
 export default function AdminDashboard() {
-  const { user, bypassLogin, bypassSuperAdminLogin } = useAuth();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalGMV: 0,
@@ -129,15 +128,9 @@ export default function AdminDashboard() {
           <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
           <h2 className="text-lg font-semibold mb-2">Admin access required</h2>
           <p className="text-muted-foreground mb-6">You do not have permission to access this page.</p>
-          <div className="space-y-3">
-            <Button className="bg-red-600 hover:bg-red-700 text-white gap-2" onClick={bypassLogin}>
-              <Shield className="h-4 w-4" /> Bypass Auth (Login as Admin)
-            </Button>
-            <Button className="bg-red-600 hover:bg-red-700 text-white gap-2" onClick={bypassSuperAdminLogin}>
-              <Shield className="h-4 w-4" /> Bypass Auth (Login as Super Admin)
-            </Button>
-            <p className="text-xs text-muted-foreground">This is a dev-only button for testing admin features</p>
-          </div>
+          <Button className="bg-[#FF6B35] hover:bg-[#FF6B35]/90" onClick={() => window.location.href = '/login'}>
+            Login
+          </Button>
         </div>
       </div>
     );
@@ -168,6 +161,14 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-muted/20">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-6">Admin Dashboard</h1>
+
+        <div className="flex flex-wrap gap-2 mb-6">
+          <Link href="/admin"><Button variant="outline" size="sm">Overview</Button></Link>
+          <Link href="/admin/products"><Button variant="outline" size="sm">Products</Button></Link>
+          <Link href="/admin/users"><Button variant="outline" size="sm">Users</Button></Link>
+          <Link href="/admin/orders"><Button variant="outline" size="sm">Orders</Button></Link>
+          <Link href="/admin/analytics"><Button variant="outline" size="sm">Analytics</Button></Link>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {statCards.map((stat) => (

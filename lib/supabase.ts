@@ -21,6 +21,38 @@ export type Profile = {
   created_at: string;
 };
 
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  icon: string | null;
+  sort_order: number;
+  created_at: string;
+};
+
+export type Notification = {
+  id: string;
+  user_id: string;
+  type: 'PURCHASE' | 'SALE' | 'PAYOUT' | 'REVIEW' | 'PRODUCT_APPROVED' | 'PRODUCT_REJECTED' | 'SYSTEM';
+  title: string;
+  message: string;
+  data: Record<string, unknown> | null;
+  is_read: boolean;
+  created_at: string;
+};
+
+export type Download = {
+  id: string;
+  order_id: string;
+  buyer_id: string;
+  product_id: string;
+  download_token: string;
+  expires_at: string;
+  ip_address: string | null;
+  created_at: string;
+};
+
 export type SellerProfile = {
   id: string;
   user_id: string;
@@ -55,6 +87,12 @@ export type Product = {
   download_count: number;
   average_rating: number;
   review_count: number;
+  is_featured: boolean;
+  tags: string[];
+  github_url: string | null;
+  download_url: string | null;
+  documentation_url: string | null;
+  version: string;
   created_at: string;
   updated_at: string;
   seller?: { name: string };

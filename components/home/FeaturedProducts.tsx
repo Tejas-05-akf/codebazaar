@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, ChevronDown, Star, Download, Store, Grid3X3 } from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { ProductSkeleton } from './ProductSkeleton';
-import type { Product } from '@/data/mockData';
+import { supabase } from '@/lib/supabase';
+import type { Product as MockProduct } from '@/data/mockData';
 
 type FilterTag = 'All' | 'Featured' | 'New' | 'Bestseller' | 'Popular';
 
@@ -98,63 +99,57 @@ function EmptyMarketplaceState() {
   );
 }
 
-// Future Product Type - ready for backend integration
-export interface MarketplaceProduct {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  category: string;
-  seller_id: string;
-  seller_name: string;
-  image_url: string | null;
-  rating: number;
-  review_count: number;
-  tags: string[];
-  is_featured: boolean;
-  badge: 'New' | 'Bestseller' | 'Hot' | null;
-  downloads: number;
-  created_at: string;
-  updated_at: string;
+// Maps a Supabase product row to the mockData Product shape expected by ProductCard
+function mapToCardProduct(p: any): MockProduct {
+  const sellerName = p.seller?.name || 'Unknown';
+  const initials = sellerName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+  const daysSinceCreated = (Date.now() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);
+  const badge: MockProduct['badge'] = daysSinceCreated < 7 ? 'New' : p.download_count > 100 ? 'Bestseller' : p.is_featured ? 'Hot' : undefined;
+
+  return {
+    id: p.id,
+    title: p.title,
+    shortDescription: p.short_description,
+    businessCategory: p.category as MockProduct['businessCategory'],
+    solutionType: p.category as MockProduct['solutionType'],
+    price: p.price / 100,
+    rating: p.average_rating || 0,
+    reviews: p.review_count || 0,
+    downloads: p.download_count || 0,
+    thumbnailColor: 'from-zinc-800/40 to-zinc-900/60',
+    seller: { name: sellerName, initials, verified: true },
+    isFeatured: p.is_featured,
+    badge,
+  };
 }
 
 export function FeaturedProducts() {
   const [activeFilter, setActiveFilter] = useState<FilterTag>('All');
   const [sortBy, setSortBy] = useState<'Popular' | 'Newest' | 'Price: Low to High' | 'Price: High to Low'>('Popular');
   const [sortOpen, setSortOpen] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<MockProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch products from backend - ready for future integration
   useEffect(() => {
-    // TODO: Replace with actual Supabase query
-    // const fetchProducts = async () => {
-    //   const { data, error } = await supabase
-    //     .from('products')
-    //     .select(`
-    //       id, name, slug, description, price, category,
-    //       seller_id, seller:profiles(name),
-    //       image_url, rating, review_count, tags, is_featured, badge, downloads,
-    //       created_at, updated_at
-    //     `)
-    //     .eq('status', 'published')
-    //     .order('created_at', { ascending: false });
-    //
-    //   if (!error && data) {
-    //     setProducts(data);
-    //   }
-    //   setIsLoading(false);
-    // };
-    // fetchProducts();
+    const fetchProducts = async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, seller:profiles(name)')
+        .eq('status', 'APPROVED')
+        .order('is_featured', { ascending: false })
+        .order('download_count', { ascending: false })
+        .limit(12);
 
-    // Currently no products - empty state
-    setProducts([]);
-    setIsLoading(false);
+      if (!error && data) {
+        setProducts(data.map(mapToCardProduct));
+      }
+      setIsLoading(false);
+    };
+    fetchProducts();
   }, []);
 
   const filtered = useMemo(() => {
-    let list: Product[] = [...products];
+    let list: MockProduct[] = [...products];
     if (activeFilter === 'Featured') list = list.filter((p) => p.isFeatured);
     if (activeFilter === 'New') list = list.filter((p) => p.badge === 'New');
     if (activeFilter === 'Bestseller') list = list.filter((p) => p.badge === 'Bestseller');
@@ -317,9 +312,11 @@ export function FeaturedProducts() {
         {/* Load more - only show when products exist */}
         {hasProducts && (
           <div className="flex justify-center mt-12">
-            <button className="font-sans text-sm text-zinc-400 border border-[#1F1F1F] rounded-lg px-6 py-2.5 hover:bg-[#1F1F1F] hover:text-zinc-200 transition-all flex items-center gap-2">
-              Load more products <ArrowRight className="w-4 h-4" />
-            </button>
+            <Link href="/browse">
+              <button className="font-sans text-sm text-zinc-400 border border-[#1F1F1F] rounded-lg px-6 py-2.5 hover:bg-[#1F1F1F] hover:text-zinc-200 transition-all flex items-center gap-2">
+                Browse all products <ArrowRight className="w-4 h-4" />
+              </button>
+            </Link>
           </div>
         )}
       </div>

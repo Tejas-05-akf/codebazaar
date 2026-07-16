@@ -15,8 +15,8 @@ interface AuthContextType {
   signup: (email: string, password: string, name: string, role: string) => Promise<{ error: string | null }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
-  bypassLogin: () => void;
-  bypassSuperAdminLogin: () => void;
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -29,8 +29,8 @@ const AuthContext = createContext<AuthContextType>({
   signup: async () => ({ error: null }),
   logout: async () => {},
   refreshUser: async () => {},
-  bypassLogin: () => {},
-  bypassSuperAdminLogin: () => {},
+  resetPassword: async () => ({ error: null }),
+  updatePassword: async () => ({ error: null }),
 });
 
 const STORAGE_KEY = 'cb_admin_view_mode';
@@ -113,37 +113,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await fetchUser();
   };
 
-  const bypassLogin = () => {
-    const adminProfile: Profile = {
-      id: '00000000-0000-0000-0000-000000000001',
-      email: 'admin@codebazaar.in',
-      name: 'Admin User',
-      role: 'ADMIN',
-      avatar_url: null,
-      is_verified: true,
-      is_banned: false,
-      created_at: new Date().toISOString(),
-    };
-    setUser(adminProfile);
-    setViewModeState(null);
-    setIsLoading(false);
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error: error?.message || null };
   };
 
-  const bypassSuperAdminLogin = () => {
-    const superAdminProfile: Profile = {
-      id: '00000000-0000-0000-0000-000000000002',
-      email: 'superadmin@codebazaar.in',
-      name: 'Super Admin',
-      role: 'SUPER_ADMIN',
-      avatar_url: null,
-      is_verified: true,
-      is_banned: false,
-      created_at: new Date().toISOString(),
-    };
-    setUser(superAdminProfile);
-    setViewModeState('admin');
-    localStorage.setItem(STORAGE_KEY, 'admin');
-    setIsLoading(false);
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    return { error: error?.message || null };
   };
 
   return (
@@ -157,8 +136,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       signup,
       logout,
       refreshUser,
-      bypassLogin,
-      bypassSuperAdminLogin,
+      resetPassword,
+      updatePassword,
     }}>
       {children}
     </AuthContext.Provider>
