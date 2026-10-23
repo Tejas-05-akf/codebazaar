@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import type { AdminViewMode } from '@/lib/auth-context';
 import { useTheme } from 'next-themes';
@@ -20,8 +20,11 @@ import { Search, Menu, X, Sun, Moon, ShoppingCart, Store, LayoutDashboard, Packa
 export function Navbar() {
   const { user, logout, viewMode, setViewMode } = useAuth();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => setMounted(true), []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +68,7 @@ export function Navbar() {
             <Button variant="ghost" size="sm">Support</Button>
           </Link>
           <Button variant="ghost" size="icon" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {mounted ? (theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />) : <Sun className="h-4 w-4 opacity-0" />}
           </Button>
           {user ? (
             <DropdownMenu>
