@@ -100,6 +100,8 @@ function mapSupabaseProduct(p: {
   review_count: number;
   download_count: number;
   thumbnail_url: string | null;
+  demo_url: string | null;
+  contact_whatsapp: string | null;
   is_featured: boolean;
   created_at: string;
   seller?: { name: string } | null;
@@ -130,6 +132,8 @@ function mapSupabaseProduct(p: {
     downloads: p.download_count || 0,
     thumbnailColor: 'from-zinc-800/40 to-zinc-900/60',
     thumbnailUrl: p.thumbnail_url,
+    demoUrl: p.demo_url,
+    contactWhatsapp: p.contact_whatsapp,
     seller: { name: sellerName, initials, verified: true },
     isFeatured: p.is_featured,
     badge,

@@ -58,13 +58,13 @@ export function SellerCTA() {
             <div className="bg-[#111111] border border-[#1F1F1F] rounded-xl p-6 relative">
               {/* Code snippet decoration */}
               <div className="font-mono text-xs text-zinc-600 leading-relaxed">
-                <div className="text-zinc-500">{'// Your solution, ready for sale'}</div>
-                <div className="text-zinc-400">{'import { App } from "./gym-pro";'}</div>
-                <div className="text-zinc-400">{'export default function GymPro() {'}</div>
-                <div className="text-zinc-400 pl-4">{'return <MemberPortal />;'}</div>
+                <div className="text-zinc-500">{'// Your business solution, ready to sell'}</div>
+                <div className="text-zinc-400">{'import { GymPro } from "./gym-pro-suite";'}</div>
+                <div className="text-zinc-400">{'export default function MemberPortal() {'}</div>
+                <div className="text-zinc-400 pl-4">{'return <CheckInPortal />;'}</div>
                 <div className="text-zinc-400">{'}'}</div>
                 <div className="mt-4 text-zinc-500">{'// Revenue: 80% to you'}</div>
-                <div className="text-zinc-400">{'// UPI payouts, instant downloads'}</div>
+                <div className="text-zinc-400">{'// Direct WhatsApp leads, no agency cut'}</div>
               </div>
               <div className="absolute -top-3 -right-3 bg-[#FF6B35] text-black font-sans text-xs font-bold px-3 py-1 rounded-lg">
                 ₹2,499 / sale

@@ -1,23 +1,23 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Download, Infinity as InfinityIcon, Code2, Globe } from 'lucide-react';
+import { Rocket, MessageCircle, Code2, Globe } from 'lucide-react';
 
 const features = [
   {
-    icon: <Download className="w-5 h-5" />,
-    title: 'Instant Download',
-    description: 'Receive your source code immediately after purchase.',
+    icon: <Rocket className="w-5 h-5" />,
+    title: 'Turnkey Deployment',
+    description: 'Get fully set up with domain, hosting, and custom branding.',
   },
   {
-    icon: <InfinityIcon className="w-5 h-5" />,
-    title: 'Lifetime License',
-    description: 'Own it forever with no recurring licensing fees.',
+    icon: <MessageCircle className="w-5 h-5" />,
+    title: 'Direct Seller Deals',
+    description: 'Connect directly with verified Indian developers on WhatsApp—no agency markups.',
   },
   {
     icon: <Code2 className="w-5 h-5" />,
     title: 'Source Code Included',
-    description: 'Fully customizable and developer-friendly.',
+    description: 'Full ownership and lifetime license without recurring fees.',
   },
   {
     icon: <Globe className="w-5 h-5" />,

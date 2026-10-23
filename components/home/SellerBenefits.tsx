@@ -11,8 +11,8 @@ const benefits = [
   },
   {
     icon: <Zap className="w-5 h-5" />,
-    title: 'Instant Delivery',
-    description: 'Your solution is delivered automatically upon payment. Zero manual work.',
+    title: 'Direct Buyer Chat',
+    description: 'Connect with business owners directly on WhatsApp. No agency middlemen.',
   },
   {
     icon: <Wallet className="w-5 h-5" />,
@@ -21,8 +21,8 @@ const benefits = [
   },
   {
     icon: <Lock className="w-5 h-5" />,
-    title: 'Protected IP',
-    description: 'Your code is protected. Buyers get a license, not full source access.',
+    title: 'Full Source Ownership',
+    description: 'Buyers get the complete source code with a lifetime license—no recurring fees.',
   },
 ];
 
