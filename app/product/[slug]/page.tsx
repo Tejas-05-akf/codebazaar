@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     .select('title, short_description, thumbnail_url')
     .eq('slug', params.slug)
     .eq('status', 'APPROVED')
-    .single();
+    .maybeSingle();
 
   if (!product) return {};
 
@@ -34,7 +34,7 @@ async function getProduct(slug: string) {
     .select('*, seller:profiles(name, email)')
     .eq('slug', slug)
     .eq('status', 'APPROVED')
-    .single();
+    .maybeSingle();
 
   if (!product) return null;
   return product;

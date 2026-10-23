@@ -92,6 +92,7 @@ function EmptyMarketplaceState() {
 
 function mapSupabaseProduct(p: {
   id: string;
+  slug: string;
   title: string;
   short_description: string;
   category: string;
@@ -123,6 +124,7 @@ function mapSupabaseProduct(p: {
 
   return {
     id: p.id,
+    slug: p.slug,
     title: p.title,
     shortDescription: p.short_description,
     category: p.category,

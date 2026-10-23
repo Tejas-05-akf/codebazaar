@@ -9,6 +9,7 @@ export type ProductBadge = 'Bestseller' | 'Hot' | 'New' | undefined;
 
 export interface ProductCardData {
   id: string;
+  slug: string;
   title: string;
   shortDescription: string;
   category: string;
@@ -60,7 +61,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       }}
       transition={{ duration: 0.2 }}
     >
-      <Link href={`/product/${product.id}`}>
+      <Link href={`/product/${product.slug}`}>
         {/* Thumbnail */}
         <div className="h-44 relative overflow-hidden">
           {product.thumbnailUrl ? (
@@ -141,7 +142,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
       {/* Footer */}
       <div className="px-4 py-3 flex items-center justify-between">
         {/* Seller */}
-        <Link href={`/product/${product.id}`} className="flex items-center gap-2">
+        <Link href={`/product/${product.slug}`} className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-full bg-[#1F1F1F] flex items-center justify-center">
             <span className="font-sans text-[10px] text-zinc-400">{product.seller.initials}</span>
           </div>
@@ -169,7 +170,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </a>
         )}
         <Link
-          href={`/product/${product.id}`}
+          href={`/product/${product.slug}`}
           className="flex-1 bg-[#1F1F1F] text-zinc-300 font-sans text-xs font-medium px-3 py-2 rounded-lg hover:bg-[#2A2A2A] hover:text-white transition-all flex items-center justify-center gap-1.5"
         >
           Get Quote
